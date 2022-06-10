@@ -23,23 +23,23 @@ This is a quick GitHub Action that leverages the API to forcefully unregister al
 
 Just remove the offline self-hosted runners on this repository
 
-    ```
-      - name: Delete offline self-hosted runners
-        uses: some-natalie/runner-reaper@v1
-        env:
-          GITHUB_PAT: ${{ secrets.RUNNER-REAPER }}
-    ```
+```yaml
+    - name: Delete offline self-hosted runners
+    uses: some-natalie/runner-reaper@v1
+    env:
+        GITHUB_PAT: ${{ secrets.RUNNER-REAPER }}
+```
 
 Clean up my enterprise pool of all offline self-hosted runners
 
-    ```
-      - name: Delete offline self-hosted runners
-        uses: some-natalie/runner-reaper@v1
-        env:
-          GITHUB_PAT: ${{ secrets.RUNNER-REAPER }}
-          SCOPE_TYPE: "enterprise"
-          SCOPE_NAME: "my-enterprise-slug"
-    ```
+```yaml
+    - name: Delete offline self-hosted runners
+    uses: some-natalie/runner-reaper@v1
+    env:
+        GITHUB_PAT: ${{ secrets.RUNNER-REAPER }}
+        SCOPE_TYPE: "enterprise"
+        SCOPE_NAME: "my-enterprise-slug"
+```
 
 ## Why?
 
