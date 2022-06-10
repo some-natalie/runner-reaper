@@ -45,4 +45,4 @@ Clean up my enterprise pool of all offline self-hosted runners
 
 If/when self-hosted runners don't unregister themselves nicely, it gets ugly.  As someone who works with ephemeral self-hosted runners, when I start testing new images out, I end up with a bunch of "offline" runners that no longer exist to unregister.  There's no GUI way I've found to remove all offline runners _en masse_, and given my terrible allergy to manual click-through-boxes work, my repositories with self-hosted runners look like :point_down: pretty fast.
 
-![tons-of-offline-runners](images/theproblem.png)
+![tons-of-offline-runners](https://github.com/some-natalie/runner-reaper/raw/main/images/theproblem.png)
