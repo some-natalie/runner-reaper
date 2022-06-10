@@ -7,11 +7,41 @@ This is a quick GitHub Action that leverages the API to forcefully unregister al
 
 ## Usage
 
-Input
+Inputs
 
-- scope
-- PAT (defined as a secret if scope is org or enterprise)
-- scope name - repo name, org name, enterprise slug
+| name | description | options | defaults |
+| --- | --- | --- | --- |
+| `GITHUB_PAT` | Personal access token (PAT) of the appropriate scope | n/a, store as a [secret](https://docs.github.com/en/actions/security-guides/encrypted-secrets) | n/a, store as a [secret](https://docs.github.com/en/actions/security-guides/encrypted-secrets) |
+| `SCOPE_TYPE` | Scope to remove offline self-hosted runners from | "repository"<br>"organization"<br>"enterprise" | "repository" |
+| `SCOPE_NAME` | Name of the repo (owner/repo), organization, or enterprise slug | any string | `GITHUB_REPOSITORY` |
+
+:information_source:  The personal access token (PAT) assumes it can use `GITHUB_TOKEN`, but may need additional permissions depending on what you're doing with it - outlined below.
+
+- "repository" = `repo` scope
+- "organization" = `repo` scope and the account must be an organization admin
+- "enterprise" = `manage_runners:enterprise` and the account must be an enterprise admin
+
+## Examples
+
+Just remove the offline self-hosted runners on this repository
+
+    ```yaml
+      - name: Delete offline self-hosted runners
+        uses: some-natalie/runner-reaper@v1
+        env:
+          GITHUB_PAT: ${{ secrets.RUNNER-REAPER }}
+    ```
+
+Clean up my enterprise pool of all offline self-hosted runners
+
+    ```yaml
+      - name: Delete offline self-hosted runners
+        uses: some-natalie/runner-reaper@v1
+        env:
+          GITHUB_PAT: ${{ secrets.RUNNER-REAPER }}
+          SCOPE_TYPE: "enterprise"
+          SCOPE_NAME: "my-enterprise-slug"
+    ```
 
 ## Why?
 

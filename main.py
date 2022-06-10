@@ -27,10 +27,10 @@ if os.environ.get("GITHUB_PAT") is None:
 else:
     github_pat = os.environ.get("GITHUB_PAT")
 
-if os.environ.get("GITHUB_RUNNER_SCOPE") is None:
+if os.environ.get("SCOPE_TYPE") is None:
     runner_scope = "repository"
 else:
-    runner_scope = os.environ.get("GITHUB_RUNNER_SCOPE")
+    runner_scope = os.environ.get("SCOPE_TYPE")
 
 if os.environ.get("SCOPE_NAME") is None:
     scope_name = os.environ.get("GITHUB_REPOSITORY")
