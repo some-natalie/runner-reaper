@@ -5,11 +5,9 @@ This is a quick GitHub Action that leverages the API to forcefully unregister al
 > **Warning**
 > As you'd expect, this Action force-removes all offline self-hosted runners in the scope provided!  It does _not_ actually do anything to the runners (VMs, bare metal boxes, etc).  This is useful if the runners are ephemeral containers and no longer exist.
 
-## Usage
+## Inputs
 
-Inputs
-
-| name | description | options | defaults |
+| Name | Description | Options | Defaults |
 | --- | --- | --- | --- |
 | `GITHUB_PAT` | Personal access token (PAT) of the appropriate scope | n/a, store as a [secret](https://docs.github.com/en/actions/security-guides/encrypted-secrets) | n/a, store as a [secret](https://docs.github.com/en/actions/security-guides/encrypted-secrets) |
 | `SCOPE_TYPE` | Scope to remove offline self-hosted runners from | "repository"<br>"organization"<br>"enterprise" | "repository" |
@@ -25,7 +23,7 @@ Inputs
 
 Just remove the offline self-hosted runners on this repository
 
-    ```yaml
+    ```
       - name: Delete offline self-hosted runners
         uses: some-natalie/runner-reaper@v1
         env:
@@ -34,7 +32,7 @@ Just remove the offline self-hosted runners on this repository
 
 Clean up my enterprise pool of all offline self-hosted runners
 
-    ```yaml
+    ```
       - name: Delete offline self-hosted runners
         uses: some-natalie/runner-reaper@v1
         env:
