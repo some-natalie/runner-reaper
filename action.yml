@@ -1,0 +1,13 @@
+name: Runner Reaper
+
+description: Forcefully unregister all offline self-hosted Actions runners from your GitHub repository, organization, or enterprise.
+
+author: Natalie Somersall (@some-natalie)
+
+runs:
+  using: "docker"
+  image: "Dockerfile"
+
+branding:
+  color: purple
+  icon: zap
