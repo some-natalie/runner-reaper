@@ -25,8 +25,8 @@ Just remove the offline self-hosted runners on this repository
 
 ```yaml
     - name: Delete offline self-hosted runners
-    uses: some-natalie/runner-reaper@v1
-    env:
+      uses: some-natalie/runner-reaper@v1
+      env:
         GITHUB_PAT: ${{ secrets.RUNNER-REAPER }}
 ```
 
@@ -34,8 +34,8 @@ Clean up my enterprise pool of all offline self-hosted runners
 
 ```yaml
     - name: Delete offline self-hosted runners
-    uses: some-natalie/runner-reaper@v1
-    env:
+      uses: some-natalie/runner-reaper@v1
+      env:
         GITHUB_PAT: ${{ secrets.RUNNER-REAPER }}
         SCOPE_TYPE: "enterprise"
         SCOPE_NAME: "my-enterprise-slug"
