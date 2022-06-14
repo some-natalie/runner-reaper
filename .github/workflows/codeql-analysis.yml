@@ -1,10 +1,7 @@
 name: "CodeQL"
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - "**.py"
+  workflow_dispatch:
   pull_request:
     branches: [main]
     paths:
