@@ -106,7 +106,7 @@ def delete_runners(api_endpoint, runner_scope, scope_name, github_pat, runner_li
             url = base_url + "/{}".format(i["id"])
             response = requests.delete(url, headers=headers)
             if response.status_code == 204:
-                print("Deleted runner {}".format(i["id"]))
+                print("Deleted runner {}".format(i["name"]))
 
 
 # Do the thing!
