@@ -12,6 +12,7 @@ This is a quick GitHub Action that leverages the API to forcefully unregister al
 | `GITHUB_PAT` | Personal access token (PAT) of the appropriate scope | n/a, store as a [secret](https://docs.github.com/en/actions/security-guides/encrypted-secrets) | n/a, store as a [secret](https://docs.github.com/en/actions/security-guides/encrypted-secrets) |
 | `SCOPE_TYPE` | Scope to remove offline self-hosted runners from | "repository"<br>"organization"<br>"enterprise" | "repository" |
 | `SCOPE_NAME` | Name of the repo (owner/repo), organization, or enterprise slug | any string | `GITHUB_REPOSITORY` |
+| `DRY_RUN` | Whether this is a "dry run" that'll only print runners, instead of delete | literally anything, it'll change any non-None value to `True` | `False` |
 
 :information_source:  The personal access token (PAT) assumes it can use `GITHUB_TOKEN`, but may need additional permissions depending on what you're doing with it - outlined below.
 

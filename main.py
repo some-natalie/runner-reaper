@@ -37,6 +37,10 @@ if os.environ.get("SCOPE_NAME") is None:
 else:
     scope_name = os.environ.get("SCOPE_NAME")
 
+if os.environ.get("DRY_RUN") is None:
+    dry_run = False
+else:
+    dry_run = True
 
 # Define functions
 def set_url(api_endpoint, runner_scope, scope_name):
@@ -79,16 +83,18 @@ def get_runners(base_url, headers):
     return runner_list
 
 
-def delete_runners(base_url, headers, runner_list):
+def delete_runners(base_url, headers, runner_list, dry_run):
     """
     Delete the offline runners
     """
     for i in runner_list:
-        if i["status"] == "offline":
+        if i["status"] == "offline" and dry_run == False:
             url = base_url + "/{}".format(i["id"])
             response = requests.delete(url, headers=headers)
             if response.status_code == 204:
                 print("Deleted runner {}".format(i["name"]))
+        elif i["status"] == "offline" and dry_run == True:
+            print("Runner {} is offline and would be deleted".format(i["name"]))
 
 
 # Do the thing!
@@ -100,4 +106,4 @@ if __name__ == "__main__":
     }
     base_url = set_url(api_endpoint, runner_scope, scope_name)
     runner_list = get_runners(base_url, headers)
-    delete_runners(base_url, headers, runner_list)
+    delete_runners(base_url, headers, runner_list, dry_run)
