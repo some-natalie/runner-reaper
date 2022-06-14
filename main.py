@@ -39,11 +39,10 @@ else:
 
 
 # Define functions
-def get_runners(api_endpoint, runner_scope, scope_name, github_pat):
+def set_url(api_endpoint, runner_scope, scope_name):
     """
-    Get the list of runners
+    Set the URL based on the scope
     """
-    # Set base url by scope
     if runner_scope == "repository":
         base_url = "{}/repos/{}/actions/runners".format(api_endpoint, scope_name)
     elif runner_scope == "organization":
@@ -53,13 +52,13 @@ def get_runners(api_endpoint, runner_scope, scope_name, github_pat):
     else:
         print("Invalid runner scope")
         return
+    return base_url
 
-    # Set headers
-    headers = {
-        "Authorization": "token {}".format(github_pat),
-        "Accept": "application/vnd.github.v3+json",
-    }
 
+def get_runners(base_url, headers):
+    """
+    Get the list of runners
+    """
     # Get the list of runners
     response = requests.get(base_url, headers=headers)
     if response.status_code == 404:
@@ -80,27 +79,10 @@ def get_runners(api_endpoint, runner_scope, scope_name, github_pat):
     return runner_list
 
 
-def delete_runners(api_endpoint, runner_scope, scope_name, github_pat, runner_list):
+def delete_runners(base_url, headers, runner_list):
     """
     Delete the offline runners
     """
-    # Set base url by scope
-    if runner_scope == "repository":
-        base_url = "{}/repos/{}/actions/runners".format(api_endpoint, scope_name)
-    elif runner_scope == "organization":
-        base_url = "{}/orgs/{}/actions/runners".format(api_endpoint, scope_name)
-    elif runner_scope == "enterprise":
-        base_url = "{}/enterprises/{}/actions/runners".format(api_endpoint, scope_name)
-    else:
-        print("Invalid runner scope")
-        return
-
-    # Set headers
-    headers = {
-        "Authorization": "token {}".format(github_pat),
-        "Accept": "application/vnd.github.v3+json",
-    }
-
     for i in runner_list:
         if i["status"] == "offline":
             url = base_url + "/{}".format(i["id"])
@@ -111,5 +93,11 @@ def delete_runners(api_endpoint, runner_scope, scope_name, github_pat, runner_li
 
 # Do the thing!
 if __name__ == "__main__":
-    runner_list = get_runners(api_endpoint, runner_scope, scope_name, github_pat)
-    delete_runners(api_endpoint, runner_scope, scope_name, github_pat, runner_list)
+    # Set headers
+    headers = {
+        "Authorization": "token {}".format(github_pat),
+        "Accept": "application/vnd.github.v3+json",
+    }
+    base_url = set_url(api_endpoint, runner_scope, scope_name)
+    runner_list = get_runners(base_url, headers)
+    delete_runners(base_url, headers, runner_list)
