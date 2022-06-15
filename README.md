@@ -12,6 +12,8 @@ This is a quick GitHub Action that leverages the API to forcefully unregister al
 | `GITHUB_PAT` | Personal access token (PAT) of the appropriate scope | n/a, store as a [secret](https://docs.github.com/en/actions/security-guides/encrypted-secrets) | n/a, store as a [secret](https://docs.github.com/en/actions/security-guides/encrypted-secrets) |
 | `SCOPE_TYPE` | Scope to remove offline self-hosted runners from | "repository"<br>"organization"<br>"enterprise" | "repository" |
 | `SCOPE_NAME` | Name of the repo (owner/repo), organization, or enterprise slug | any string | `GITHUB_REPOSITORY` |
+| `DRY_RUN` | Whether this is a "dry run" that'll only print runners, instead of delete | literally anything, it'll change any non-None value to `True` | `False` |
+| `FUZZY_NAME` | String to match within the runner name | any string | `` (an empty string, which matches anything) |
 
 :information_source:  The personal access token (PAT) assumes it can use `GITHUB_TOKEN`, but may need additional permissions depending on what you're doing with it - outlined below.
 
@@ -19,15 +21,17 @@ This is a quick GitHub Action that leverages the API to forcefully unregister al
 - "organization" = `repo` scope and the account must be an organization admin
 - "enterprise" = `manage_runners:enterprise` and the account must be an enterprise admin
 
+:information_source:  The name matching works on matching a substring in a string, no regular expressions or other fanciness.  Simple is better than complex.
+
 ## Examples
 
-Just remove the offline self-hosted runners on this repository
+Just remove all the offline self-hosted runners on this repository
 
 ```yaml
     - name: Delete offline self-hosted runners
       uses: some-natalie/runner-reaper@v1
       env:
-        GITHUB_PAT: ${{ secrets.RUNNER-REAPER }}
+        GITHUB_PAT: ${{ secrets.RUNNER_REAPER }}
 ```
 
 Clean up my enterprise pool of all offline self-hosted runners
@@ -36,9 +40,21 @@ Clean up my enterprise pool of all offline self-hosted runners
     - name: Delete offline self-hosted runners
       uses: some-natalie/runner-reaper@v1
       env:
-        GITHUB_PAT: ${{ secrets.RUNNER-REAPER }}
+        GITHUB_PAT: ${{ secrets.RUNNER_REAPER }}
         SCOPE_TYPE: "enterprise"
         SCOPE_NAME: "my-enterprise-slug"
+```
+
+Remove all the offline runners in this organization with `test` anywhere in the name.
+
+```yaml
+    - name: Delete offline self-hosted runners
+      uses: some-natalie/runner-reaper@v1
+      env:
+        GITHUB_PAT: ${{ secrets.RUNNER_REAPER }}
+        SCOPE_TYPE: "organization"
+        SCOPE_NAME: "my-awesome-org"
+        FUZZY_NAME: "test"
 ```
 
 ## Why?

@@ -7,6 +7,8 @@ Inputs:
 - PAT of appropriate scope (assumes the workflow token if not specified)
 - Report scope ("enterprise", "organization", "repository")
 - Enterprise slug OR organization name OR repository name
+- Dry run (False if not set, True if set to literally anything)
+- Substring (string to match against runner name, such as to only delete runners with "test" in the name)
 
 Outputs:
 - Nothing really, it removes your offline runners
@@ -37,13 +39,21 @@ if os.environ.get("SCOPE_NAME") is None:
 else:
     scope_name = os.environ.get("SCOPE_NAME")
 
+if os.environ.get("DRY_RUN") is None:
+    dry_run = False
+else:
+    dry_run = True
+
+if os.environ.get("FUZZY_NAME") is None:
+    substring = ""
+else:
+    substring = os.environ.get("FUZZY_NAME")
 
 # Define functions
-def get_runners(api_endpoint, runner_scope, scope_name, github_pat):
+def set_url(api_endpoint, runner_scope, scope_name):
     """
-    Get the list of runners
+    Set the URL based on the scope
     """
-    # Set base url by scope
     if runner_scope == "repository":
         base_url = "{}/repos/{}/actions/runners".format(api_endpoint, scope_name)
     elif runner_scope == "organization":
@@ -53,13 +63,13 @@ def get_runners(api_endpoint, runner_scope, scope_name, github_pat):
     else:
         print("Invalid runner scope")
         return
+    return base_url
 
-    # Set headers
-    headers = {
-        "Authorization": "token {}".format(github_pat),
-        "Accept": "application/vnd.github.v3+json",
-    }
 
+def get_runners(base_url, headers):
+    """
+    Get the list of runners
+    """
     # Get the list of runners
     response = requests.get(base_url, headers=headers)
     if response.status_code == 404:
@@ -80,36 +90,27 @@ def get_runners(api_endpoint, runner_scope, scope_name, github_pat):
     return runner_list
 
 
-def delete_runners(api_endpoint, runner_scope, scope_name, github_pat, runner_list):
+def delete_runners(base_url, headers, runner_list, dry_run, substring):
     """
     Delete the offline runners
     """
-    # Set base url by scope
-    if runner_scope == "repository":
-        base_url = "{}/repos/{}/actions/runners".format(api_endpoint, scope_name)
-    elif runner_scope == "organization":
-        base_url = "{}/orgs/{}/actions/runners".format(api_endpoint, scope_name)
-    elif runner_scope == "enterprise":
-        base_url = "{}/enterprises/{}/actions/runners".format(api_endpoint, scope_name)
-    else:
-        print("Invalid runner scope")
-        return
+    for i in runner_list:
+        if i["status"] == "offline" and substring in i["name"] and dry_run == False:
+            url = base_url + "/{}".format(i["id"])
+            response = requests.delete(url, headers=headers)
+            if response.status_code == 204:
+                print("Deleted runner {}".format(i["name"]))
+        elif i["status"] == "offline" and substring in i["name"] and dry_run == True:
+            print("Runner {} is offline and would be deleted".format(i["name"]))
 
+
+# Do the thing!
+if __name__ == "__main__":
     # Set headers
     headers = {
         "Authorization": "token {}".format(github_pat),
         "Accept": "application/vnd.github.v3+json",
     }
-
-    for i in runner_list:
-        if i["status"] == "offline":
-            url = base_url + "/{}".format(i["id"])
-            response = requests.delete(url, headers=headers)
-            if response.status_code == 204:
-                print("Deleted runner {}".format(i["name"]))
-
-
-# Do the thing!
-if __name__ == "__main__":
-    runner_list = get_runners(api_endpoint, runner_scope, scope_name, github_pat)
-    delete_runners(api_endpoint, runner_scope, scope_name, github_pat, runner_list)
+    base_url = set_url(api_endpoint, runner_scope, scope_name)
+    runner_list = get_runners(base_url, headers)
+    delete_runners(base_url, headers, runner_list, dry_run, substring)
