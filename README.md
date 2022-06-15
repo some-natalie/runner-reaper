@@ -29,7 +29,7 @@ Just remove all the offline self-hosted runners on this repository
 
 ```yaml
     - name: Delete offline self-hosted runners
-      uses: some-natalie/runner-reaper@v1
+      uses: some-natalie/runner-reaper@v2
       env:
         GITHUB_PAT: ${{ secrets.RUNNER_REAPER }}
 ```
@@ -38,7 +38,7 @@ Clean up my enterprise pool of all offline self-hosted runners
 
 ```yaml
     - name: Delete offline self-hosted runners
-      uses: some-natalie/runner-reaper@v1
+      uses: some-natalie/runner-reaper@v2
       env:
         GITHUB_PAT: ${{ secrets.RUNNER_REAPER }}
         SCOPE_TYPE: "enterprise"
@@ -49,13 +49,19 @@ Remove all the offline runners in this organization with `test` anywhere in the 
 
 ```yaml
     - name: Delete offline self-hosted runners
-      uses: some-natalie/runner-reaper@v1
+      uses: some-natalie/runner-reaper@v2
       env:
         GITHUB_PAT: ${{ secrets.RUNNER_REAPER }}
         SCOPE_TYPE: "organization"
         SCOPE_NAME: "my-awesome-org"
         FUZZY_NAME: "test"
 ```
+
+## Running outside of GitHub.com
+
+If you're using GitHub Enterprise Server or GitHub AE, this works out of the box just fine _as long as_ you are using self-hosted runners that are capable of running Docker Actions.  This Action picks up the API URL for your Server or AE automatically every time it's run, so no extra configuration is needed to just use it.
+
+The dependencies are very deliberately chosen to be minimal - it uses `python:3-slim` as the base image and only `requests` for a pip package, which both likely exist on internal "approved-by-corporate-IT" package registries.  If you can't use GitHub Actions to manage itself, you can still run the `main.py` script manually or on a cron job with the inputs as environment variables.
 
 ## Why?
 
