@@ -17,6 +17,7 @@ Outputs:
 # Import modules
 import requests
 import os
+import sys
 
 # Read in config values
 if os.environ.get("GITHUB_API_ENDPOINT") is None:
@@ -62,7 +63,7 @@ def set_url(api_endpoint, runner_scope, scope_name):
         base_url = "{}/enterprises/{}/actions/runners".format(api_endpoint, scope_name)
     else:
         print("Invalid runner scope")
-        return
+        sys.exit(1)
     return base_url
 
 
